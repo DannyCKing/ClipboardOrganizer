@@ -1,0 +1,179 @@
+﻿<Window x:Class="ClipboardOrganizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:local="clr-namespace:ClipboardOrganizer"
+        mc:Ignorable="d" 
+        Left="1000" Top="100"
+        Title="My Clipboard" Height="800" Width="300" Loaded="Window_Loaded">
+    <Window.Resources>
+        <Storyboard x:Key="FadeOutStoryboard">
+            <DoubleAnimation BeginTime="0:0:0"
+            Storyboard.TargetName="ToastArea"
+            Storyboard.TargetProperty="Opacity"
+            From="0.0"
+            To="1.0"
+            Duration="0:0:0.05"/>
+            <DoubleAnimation BeginTime="0:0:0.05"
+            Storyboard.TargetName="ToastArea"
+            Storyboard.TargetProperty="Opacity"
+            From="1.0"
+            To="1.0"
+            Duration="0:0:0.25"/>
+            <DoubleAnimation BeginTime="0:0:0.30"
+            Storyboard.TargetName="ToastArea"
+            Storyboard.TargetProperty="Opacity"
+            From="1.0"
+            To="0.0"
+            Duration="0:0:1"/>
+        </Storyboard>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Green"/>
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Padding" Value="10" />
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="18"/>
+        </Style>
+        <DataTemplate DataType="{x:Type local:ClipboardItemViewModel}">
+            <Border BorderThickness="0 1 0 1" BorderBrush="Black" >
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" Background="White">
+                        <Label Content="{Binding Number}" VerticalAlignment="Center" Foreground="Black"></Label>
+                    </Grid>
+                    <Grid Grid.Column="1" Background="white">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Grid.ColumnSpan="4"  >
+                            <Label Content="{Binding Name}" />
+                        </StackPanel>
+                        <Button Grid.Column="0" Grid.Row="1"  Command="{Binding OpenCommand}" Height="30"  Padding="10" Background="DarkCyan" BorderThickness="0" >
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#005858" TargetName="Border" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                            <Button.Content>
+                                <fa:ImageAwesome Icon="FolderOpen"  Foreground="White" />
+                            </Button.Content>
+
+                        </Button>
+                        <Button Grid.Column="1" Grid.Row="1"  Command="{Binding CopyCommand}" Height="30"  Padding="10" Background="Green" BorderThickness="0" >
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="DarkGreen" TargetName="Border" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                            <Button.Content>
+                                <fa:ImageAwesome Icon="Copy"  Foreground="White" />
+                            </Button.Content>
+
+                        </Button>
+                        <Button Grid.Column="2" Grid.Row="1"  Command="{Binding EditCommand}" CommandParameter="{Binding}" Height="30"  Background="Orange" BorderThickness="0" Padding="5"  >
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#cc8400" TargetName="Border" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                            <Button.Content>
+                                <fa:ImageAwesome Icon="Edit" Foreground="White">
+                                </fa:ImageAwesome>
+                            </Button.Content>
+                        </Button>
+                        <Button Grid.Column="3" Grid.Row="1"  Command="{Binding ClearCommand}"  Background="Red" BorderThickness="0" Height="30"  Padding="5"  >
+                            <Button.Content>
+                                <fa:ImageAwesome Icon="Trash" Foreground="White" />
+                            </Button.Content>
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="DarkRed" TargetName="Border" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                    </Grid>
+                </Grid>
+                
+            </Border>
+
+        </DataTemplate>
+    </Window.Resources>
+    <Grid x:Name="MainGrid">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding ClipboardItems}"
+              ItemTemplate="{Binding}" />
+        </ScrollViewer>
+        <Border Name="ToastArea" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Visibility="Collapsed" >
+            <Label x:Name="ToastAreaLabel" Visibility="Visible" Content="Copied!"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderThickness="2" BorderBrush="Black"
+               Background="Green" Height="50" Foreground="White" Margin="10" />
+        </Border>
+    </Grid>
+</Window>
