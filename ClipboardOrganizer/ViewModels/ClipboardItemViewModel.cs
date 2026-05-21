@@ -72,6 +72,32 @@ namespace ClipboardOrganizer
             }
         }
 
+        private ClipboardItemType _ItemType = ClipboardItemType.String;
+
+        public ClipboardItemType ItemType
+        {
+            get { return _ItemType; }
+            set
+            {
+                _ItemType = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string ItemTypeDisplay
+        {
+            get
+            {
+                switch (ItemType)
+                {
+                    case ClipboardItemType.FolderPath: return "Folder";
+                    case ClipboardItemType.URL: return "URL";
+                    case ClipboardItemType.Password: return "Password";
+                    default: return "Text";
+                }
+            }
+        }
+
         private ICommand _OpenCommand = null;
 
         public ICommand OpenCommand
@@ -89,18 +115,21 @@ namespace ClipboardOrganizer
 
         private bool CanOpen()
         {
-            return true;
+            return ItemType == ClipboardItemType.FolderPath || ItemType == ClipboardItemType.URL;
         }
 
         private void OpenFunc()
         {
             try
             {
-                Process.Start("explorer.exe", ClipboardValue);
+                if (ItemType == ClipboardItemType.URL)
+                    Process.Start(new ProcessStartInfo(ClipboardValue) { UseShellExecute = true });
+                else
+                    Process.Start("explorer.exe", ClipboardValue);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("There was an error opening the path", "Error", MessageBoxButton.OK, MessageBoxImage.Error); 
+                MessageBox.Show("There was an error opening the path", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -164,12 +193,13 @@ namespace ClipboardOrganizer
 
         }
 
-        public ClipboardItemViewModel(int number, string name, string clipboardValue, string desc)
+        public ClipboardItemViewModel(int number, string name, string clipboardValue, string desc, ClipboardItemType itemType = ClipboardItemType.String)
         {
             Number = number;
             Name = name;
             ClipboardValue = clipboardValue;
             Description = desc;
+            ItemType = itemType;
         }
 
         private bool CanEdit()
@@ -179,11 +209,11 @@ namespace ClipboardOrganizer
 
         private void EditFunc()
         {
-            var newWindow = new EditWindow(Number, Name, ClipboardValue, Description);
+            var newWindow = new EditWindow(Number, Name, ClipboardValue, Description, ItemType);
             var result = newWindow.ShowDialog();
             if (result.HasValue && result.Value == true)
             {
-                var clipboardItem = new ClipboardItemViewModel(newWindow.Id, newWindow.ClipName, newWindow.ClipboardValue, newWindow.Desc);
+                var clipboardItem = new ClipboardItemViewModel(newWindow.Id, newWindow.ClipName, newWindow.ClipboardValue, newWindow.Desc, newWindow.ItemType);
                 FileUtilities.SaveClipboardItem(clipboardItem);
                 ClipboardItemUpdated(new MessageEventArgs(MessageTypeEnum.Info, "Updated"));
             }

@@ -10,6 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -26,13 +27,17 @@
         <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Content="Value:"/>
         <TextBox Grid.Row="1" Grid.Column="1" Margin="6,2" x:Name="ValueTextBox" />
 
+        <!-- Type -->
+        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Content="Type:"/>
+        <ComboBox Grid.Row="2" Grid.Column="1" Margin="6,2" x:Name="TypeComboBox" />
+
         <!-- Description -->
-        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Top" Content="Description:"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Margin="6,2" x:Name="DescriptionTextBox"
+        <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Top" Content="Description:"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Margin="6,2" x:Name="DescriptionTextBox"
                  AcceptsReturn="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" />
 
         <!-- Action Buttons -->
-        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
             <Button Width="90" Content="Cancel" IsCancel="True" Click="Cancel_Click" />
             <Button Width="20" Visibility="Hidden" IsEnabled="False"/>
             <Button Width="90" x:Name="SaveButton" Margin="0,0,8,0" Content="Save" IsDefault="True" Click="SaveButton_Click" />

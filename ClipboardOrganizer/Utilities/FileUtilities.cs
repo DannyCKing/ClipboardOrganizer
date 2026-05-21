@@ -109,7 +109,7 @@ namespace ClipboardOrganizer
             var clipValueEncoded = Base64Encode(clipboardModel.ClipboardValue.Trim());
             var clipDescEncoded = Base64Encode(clipboardModel.Description.Trim());
 
-            var lines = new List<string>() { clipboardModel.Number.ToString(), clipboardModel.Name, clipValueEncoded, clipDescEncoded };
+            var lines = new List<string>() { clipboardModel.Number.ToString(), clipboardModel.Name, clipValueEncoded, clipDescEncoded, clipboardModel.ItemType.ToString() };
             File.WriteAllLines(fullFilePath, lines);
         }
 
@@ -126,7 +126,10 @@ namespace ClipboardOrganizer
                 {
                     var clipValue = Base64Decode(lines[2]);
                     var clipDesc = Base64Decode(lines[3]);
-                    return new ClipboardItemViewModel(int.Parse(lines[0]), lines[1], clipValue, clipDesc);
+                    var itemType = ClipboardItemType.String;
+                    if (lines.Length > 4)
+                        Enum.TryParse(lines[4], out itemType);
+                    return new ClipboardItemViewModel(int.Parse(lines[0]), lines[1], clipValue, clipDesc, itemType);
                 }
                 catch (Exception ex)
                 {

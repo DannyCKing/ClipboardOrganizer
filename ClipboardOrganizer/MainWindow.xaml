@@ -60,9 +60,32 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Grid.ColumnSpan="4"  >
-                            <Label Content="{Binding Name}" />
-                        </StackPanel>
+                        <Grid Grid.Row="0" Grid.ColumnSpan="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="{Binding Name}" />
+                            <Border Grid.Column="1" CornerRadius="3" Padding="5,2" Margin="0,5,5,5" VerticalAlignment="Center">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="#607D8B"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ItemType}" Value="FolderPath">
+                                                <Setter Property="Background" Value="#00838F"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ItemType}" Value="URL">
+                                                <Setter Property="Background" Value="#1565C0"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ItemType}" Value="Password">
+                                                <Setter Property="Background" Value="#6A1B9A"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Text="{Binding ItemTypeDisplay}" Foreground="White" FontSize="9" FontWeight="Bold"/>
+                            </Border>
+                        </Grid>
                         <Button Grid.Column="0" Grid.Row="1"  Command="{Binding OpenCommand}" Height="30"  Padding="10" Background="DarkCyan" BorderThickness="0" >
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}">

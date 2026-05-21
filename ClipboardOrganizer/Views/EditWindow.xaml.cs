@@ -27,12 +27,15 @@ namespace ClipboardOrganizer
 
         public string Desc { get; private set; }
 
-        public EditWindow(int id, string name, string clipValue, string desc)
+        public ClipboardItemType ItemType { get; private set; }
+
+        public EditWindow(int id, string name, string clipValue, string desc, ClipboardItemType itemType = ClipboardItemType.String)
         {
             Id = id;
             ClipName = name;
             ClipboardValue = clipValue;
             Desc = desc;
+            ItemType = itemType;
             InitializeComponent();
 
             this.Loaded += EditWindow_Loaded;
@@ -43,6 +46,8 @@ namespace ClipboardOrganizer
             NameTextBox.Text = ClipName;
             DescriptionTextBox.Text = Desc;
             ValueTextBox.Text = ClipboardValue;
+            TypeComboBox.ItemsSource = Enum.GetValues(typeof(ClipboardItemType));
+            TypeComboBox.SelectedItem = ItemType;
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -55,6 +60,7 @@ namespace ClipboardOrganizer
             ClipName = NameTextBox.Text;
             ClipboardValue = ValueTextBox.Text;
             Desc = DescriptionTextBox.Text;
+            ItemType = (ClipboardItemType)TypeComboBox.SelectedItem;
 
             this.DialogResult = true;
 

@@ -98,6 +98,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ClipboardItemType.cs" />
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Utilities\MessageEventArgs.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
