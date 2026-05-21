@@ -179,10 +179,12 @@ namespace ClipboardOrganizer
             ClipboardValue = clipboardValue;
             Description = desc;
         }
+
         private bool CanEdit()
         {
             return true;
         }
+
         private void EditFunc()
         {
             var newWindow = new EditWindow(Number, Name, ClipboardValue, Description);
