@@ -40,7 +40,7 @@
             <Setter Property="FontSize" Value="18"/>
         </Style>
         <DataTemplate DataType="{x:Type local:ClipboardItemViewModel}">
-            <Border BorderThickness="0 1 0 1" BorderBrush="Black" >
+            <Border BorderThickness="0 2 0 2" BorderBrush="Black" >
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0"/>
@@ -135,7 +135,7 @@
                                 </fa:ImageAwesome>
                             </Button.Content>
                         </Button>
-                        <Button Grid.Column="3" Grid.Row="1"  Command="{Binding ClearCommand}"  Background="Red" BorderThickness="0" Height="30"  Padding="5"  >
+                        <Button Grid.Column="3" Grid.Row="1"  Command="{Binding DeleteCommand}"  Background="Red" BorderThickness="0" Height="30"  Padding="5"  >
                             <Button.Content>
                                 <fa:ImageAwesome Icon="Trash" Foreground="White" />
                             </Button.Content>
@@ -167,11 +167,35 @@
         </DataTemplate>
     </Window.Resources>
     <Grid x:Name="MainGrid">
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding ClipboardItems}"
-              ItemTemplate="{Binding}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Grid.Row="0" Command="{Binding AddItemCommand}" Height="36" Background="#2E7D32" BorderThickness="0" Foreground="White" FontSize="14" FontWeight="SemiBold">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#1B5E20" TargetName="Border"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+            + Add Item
+        </Button>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding ClipboardItems}" />
         </ScrollViewer>
-        <Border Name="ToastArea" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Visibility="Collapsed" >
+        <Border Grid.Row="1" Name="ToastArea" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Visibility="Collapsed" >
             <Label x:Name="ToastAreaLabel" Visibility="Visible" Content="Copied!"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderThickness="2" BorderBrush="Black"
                Background="Green" Height="50" Foreground="White" Margin="10" />
         </Border>

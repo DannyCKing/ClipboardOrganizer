@@ -36,19 +36,53 @@ namespace ClipboardOrganizer
             ReloadList();
         }
 
+        private ICommand _AddItemCommand;
+        public ICommand AddItemCommand
+        {
+            get
+            {
+                if (_AddItemCommand == null)
+                    _AddItemCommand = new BaseCommand(AddItemFunc, () => true);
+                return _AddItemCommand;
+            }
+        }
+
         public void ReloadList()
         {
-            ClipboardItems = new ObservableCollection<ClipboardItemViewModel>();
-
             var items = fileUtilities.GetCurrentClipboardModels();
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 item.ClipboardItemUpdated += Item_ClipboardItemUpdated;
                 item.ClipboardItemCopied += Item_ClipboardItemCopied;
-                item.ClipboardItemCleared += Item_ClipboardItemCleared; ;
-
+                item.ClipboardItemCleared += Item_ClipboardItemCleared;
+                item.ClipboardItemDeleted += (args) => Item_ClipboardItemDeleted(args, item);
             }
             ClipboardItems = new ObservableCollection<ClipboardItemViewModel>(items);
+        }
+
+        private void AddItemFunc()
+        {
+            var newNumber = FileUtilities.GetNextItemNumber();
+            var newWindow = new EditWindow(newNumber, "", "", "");
+            var result = newWindow.ShowDialog();
+            if (result.HasValue && result.Value == true)
+            {
+                var newItem = new ClipboardItemViewModel(newNumber, newWindow.ClipName, newWindow.ClipboardValue, newWindow.Desc);
+                FileUtilities.SaveClipboardItem(newItem);
+                newItem.ClipboardItemUpdated += Item_ClipboardItemUpdated;
+                newItem.ClipboardItemCopied += Item_ClipboardItemCopied;
+                newItem.ClipboardItemCleared += Item_ClipboardItemCleared;
+                newItem.ClipboardItemDeleted += (args) => Item_ClipboardItemDeleted(args, newItem);
+                ClipboardItems.Add(newItem);
+                ClipboardItemUpdatedVM(new MessageEventArgs(MessageTypeEnum.Good, "Added"));
+            }
+        }
+
+        private void Item_ClipboardItemDeleted(MessageEventArgs args, ClipboardItemViewModel item)
+        {
+            FileUtilities.DeleteClipboardItem(item.Number);
+            ClipboardItems.Remove(item);
+            ClipboardItemUpdatedVM(args);
         }
 
         private void Item_ClipboardItemCleared(MessageEventArgs args)

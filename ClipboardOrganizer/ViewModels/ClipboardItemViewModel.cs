@@ -11,6 +11,7 @@ namespace ClipboardOrganizer
         public event ClipboardItemUpdatedHandler ClipboardItemUpdated;
         public event ClipboardItemUpdatedHandler ClipboardItemCopied;
         public event ClipboardItemUpdatedHandler ClipboardItemCleared;
+        public event ClipboardItemUpdatedHandler ClipboardItemDeleted;
 
         private int _Number;
         public int Number
@@ -134,36 +135,27 @@ namespace ClipboardOrganizer
         }
 
 
-        private ICommand _ClearCommand;
+        private ICommand _DeleteCommand;
 
-        public ICommand ClearCommand
+        public ICommand DeleteCommand
         {
             get
             {
-                if (_ClearCommand == null)
+                if (_DeleteCommand == null)
                 {
-                    _ClearCommand = new BaseCommand(ClearFunc, CanClear);
+                    _DeleteCommand = new BaseCommand(DeleteFunc, () => true);
                 }
 
-                return _ClearCommand;
+                return _DeleteCommand;
             }
         }
 
-        private bool CanClear()
+        private void DeleteFunc()
         {
-            return true;
-        }
-
-        private void ClearFunc()
-        {
-            var result = MessageBox.Show("Are you sure you want to clear this entry?", "Are you sure?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("Are you sure you want to delete this entry?", "Are you sure?", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
-                this.Name = "";
-                this.ClipboardValue = "";
-                this.Description = "";
-                FileUtilities.SaveClipboardItem(this);
-                ClipboardItemUpdated(new MessageEventArgs(MessageTypeEnum.Error, "Cleared"));
+                ClipboardItemDeleted(new MessageEventArgs(MessageTypeEnum.Error, "Deleted"));
             }
         }
 

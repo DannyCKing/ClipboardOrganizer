@@ -17,7 +17,6 @@ namespace ClipboardOrganizer
 
         public const string CLIPBOARD_ITEM_FILE_NAME_PREFIX = "ClipboardItem_";
 
-        public const int MAX_ITEMS = 20;
         public static string DeveloperDirectory
         {
             get
@@ -66,25 +65,35 @@ namespace ClipboardOrganizer
 
         public List<ClipboardItemViewModel> GetCurrentClipboardModels()
         {
-            List<ClipboardItemViewModel> items = new List<ClipboardItemViewModel>();
-            var files = Directory.GetFiles(ClipboardDirectory);
+            var items = new List<ClipboardItemViewModel>();
+            var files = Directory.GetFiles(ClipboardDirectory, CLIPBOARD_ITEM_FILE_NAME_PREFIX + "*.txt");
 
-            for (int i = 1; i <= MAX_ITEMS; i++)
+            foreach (var file in files)
             {
-                var fileName = CreateFileName(i);
-                var fullPath = Path.Combine(ClipboardDirectory, fileName);
-                var clipboardModel = ParseClipboardFile(fullPath);
-
-                // no record exist yet in this slot, insert an empty record
-                if (clipboardModel == null)
-                {
-                    clipboardModel = new ClipboardItemViewModel(i, "EMPTY", "", "");
-                    SaveClipboardItem(clipboardModel);
-                }
-                items.Add(clipboardModel);
+                var item = ParseClipboardFile(file);
+                if (item != null && !(item.Name == "EMPTY" && string.IsNullOrEmpty(item.ClipboardValue)))
+                    items.Add(item);
             }
 
-            return items;
+            return items.OrderBy(x => x.Number).ToList();
+        }
+
+        public static void DeleteClipboardItem(int number)
+        {
+            var fullPath = Path.Combine(ClipboardDirectory, CreateFileName(number));
+            if (File.Exists(fullPath))
+                File.Delete(fullPath);
+        }
+
+        public static int GetNextItemNumber()
+        {
+            var files = Directory.GetFiles(ClipboardDirectory, CLIPBOARD_ITEM_FILE_NAME_PREFIX + "*.txt");
+            if (files.Length == 0) return 1;
+            var numbers = files
+                .Select(f => Path.GetFileNameWithoutExtension(f).Replace(CLIPBOARD_ITEM_FILE_NAME_PREFIX, ""))
+                .Select(n => int.TryParse(n, out int num) ? num : 0)
+                .Where(n => n > 0);
+            return numbers.Any() ? numbers.Max() + 1 : 1;
         }
 
         private static string CreateFileName(int fileNumber)
