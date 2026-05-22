@@ -74,6 +74,8 @@ namespace ClipboardOrganizer
                 newItem.ClipboardItemCleared += Item_ClipboardItemCleared;
                 newItem.ClipboardItemDeleted += (args) => Item_ClipboardItemDeleted(args, newItem);
                 ClipboardItems.Add(newItem);
+                ClipboardItems = new ObservableCollection<ClipboardItemViewModel>(
+                    ClipboardItems.OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase));
                 ClipboardItemUpdatedVM(new MessageEventArgs(MessageTypeEnum.Good, "Added"));
             }
         }

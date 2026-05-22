@@ -98,6 +98,8 @@ namespace ClipboardOrganizer
             }
         }
 
+        public string OpenTooltip => ItemType == ClipboardItemType.URL ? "Open in browser" : "Open in File Explorer";
+
         private ICommand _OpenCommand = null;
 
         public ICommand OpenCommand
@@ -185,6 +187,26 @@ namespace ClipboardOrganizer
             if (result == MessageBoxResult.Yes)
             {
                 ClipboardItemDeleted(new MessageEventArgs(MessageTypeEnum.Error, "Deleted"));
+            }
+        }
+
+        private bool _IsRevealed = false;
+        public bool IsRevealed
+        {
+            get { return _IsRevealed; }
+            set { _IsRevealed = value; OnPropertyChanged(); }
+        }
+
+        public string RevealButtonLabel => IsRevealed ? "Hide" : "Reveal";
+
+        private ICommand _RevealCommand;
+        public ICommand RevealCommand
+        {
+            get
+            {
+                if (_RevealCommand == null)
+                    _RevealCommand = new BaseCommand(() => { IsRevealed = !IsRevealed; }, () => true);
+                return _RevealCommand;
             }
         }
 

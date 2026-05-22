@@ -36,7 +36,7 @@ namespace ClipboardOrganizer
             var margin = 25;
             var rect = GetScreen();
 
-            var maxWidth = 300;
+            var maxWidth = 500;
 
             var minWidth = 200;
 

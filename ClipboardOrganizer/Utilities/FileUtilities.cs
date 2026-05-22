@@ -75,7 +75,7 @@ namespace ClipboardOrganizer
                     items.Add(item);
             }
 
-            return items.OrderBy(x => x.Number).ToList();
+            return items.OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase).ToList();
         }
 
         public static void DeleteClipboardItem(int number)
